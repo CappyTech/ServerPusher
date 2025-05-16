@@ -23,10 +23,10 @@ ServerPusher enables Spigot/Paper plugins to send dynamic JSON payloads via HTTP
 ```xml
 <dependency>
   <groupId>com.sovereigncraft</groupId>
-  <artifactId>server-pusher</artifactId>
+  <artifactId>ServerPusher</artifactId>
   <version>1.0.0</version>
   <scope>system</scope>
-  <systemPath>${project.basedir}/lib/server-pusher-1.0.0.jar</systemPath>
+  <systemPath>${project.basedir}/lib/serverpusher-1.0.0.jar</systemPath>
 </dependency>
 ```
 
