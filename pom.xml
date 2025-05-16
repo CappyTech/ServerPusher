@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.sovereigncraft</groupId>
-  <artifactId>serverpusher</artifactId>
+  <artifactId>ServerPusher</artifactId>
   <version>1.0.0</version>
   <name>Server Pusher</name>
 
