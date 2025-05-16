@@ -1,27 +1,61 @@
 # ServerPusher
-------------
 
 Generic JSON transport library for Minecraft plugins.
 
 ServerPusher enables Spigot/Paper plugins to send dynamic JSON payloads via HTTP POST to external services like Node.js backends. It’s lightweight, plugin-agnostic, and ideal for dashboards, monitoring, and analytics.
 
-## Features:
-- Send structured JSON from Minecraft
+---
+
+## Features
+
+- Send structured JSON from Minecraft plugins
 - Built-in HTTP client with custom headers
-- Add to any plugin without rewriting logic
+- Reusable as a library across plugins
 - Used by [ServerEmitter](https://github.com/CappyTech/ServerEmitter) and [ServerReceiver](https://github.com/CappyTech/ServerReceiver)
 
-## Usage:
-- Configure with a backend URL and headers (e.g., Authorization)
-- Send any data as Map<String, Object>
-- Sends automatically as JSON via POST
+---
 
-## Example:
-```java
-  Map<String, Object> data = new HashMap<>();
-  data.put("event", "heartbeat");
-  data.put("players", 10);
-  ServerPusher.sendData("heartbeat", data);
+## Usage
+
+1. Add the `server-pusher-1.0.0.jar` to your plugin’s `/lib` folder
+2. Reference it in your plugin's `pom.xml`:
+
+```xml
+<dependency>
+  <groupId>com.sovereigncraft</groupId>
+  <artifactId>server-pusher</artifactId>
+  <version>1.0.0</version>
+  <scope>system</scope>
+  <systemPath>${project.basedir}/lib/server-pusher-1.0.0.jar</systemPath>
+</dependency>
 ```
-## License:
+
+3. Initialize and use ServerPusher in your plugin:
+
+```java
+Map<String, String> headers = new HashMap<>();
+headers.put("Authorization", "Bearer your-token");
+
+ServerPusher.configure("http://localhost:3000/api/push", headers, getLogger());
+```
+
+4. Send data from anywhere:
+
+```java
+Map<String, Object> payload = new HashMap<>();
+payload.put("event", "heartbeat");
+payload.put("players", Bukkit.getOnlinePlayers().size());
+ServerPusher.sendData("heartbeat", payload);
+```
+
+---
+
+## Example Plugin
+
+[ServerEmitter](https://github.com/CappyTech/ServerEmitter) uses ServerPusher to test and emit data to a backend.
+
+---
+
+## License
+
 MIT
