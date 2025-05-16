@@ -1,35 +1,27 @@
-# ServerReceiver
---------------
+# ServerPusher
+------------
 
-Node.js backend for receiving JSON POSTs from Minecraft servers and storing them in MongoDB.
+Generic JSON transport library for Minecraft plugins.
 
-Accepts data from plugins using ServerPusher, enforces per-server authentication, and stores JSON documents for offline dashboard and history.
+ServerPusher enables Spigot/Paper plugins to send dynamic JSON payloads via HTTP POST to external services like Node.js backends. It’s lightweight, plugin-agnostic, and ideal for dashboards, monitoring, and analytics.
 
 ## Features:
-- Receives /api/push POSTs
-- Configurable server auth (none, token, hmac)
-- Multiple server support via .env
-- MongoDB storage for raw JSON events
+- Send structured JSON from Minecraft
+- Built-in HTTP client with custom headers
+- Add to any plugin without rewriting logic
+- Used by [ServerEmitter](https://github.com/CappyTech/ServerEmitter) and [ServerReceiver](https://github.com/CappyTech/ServerReceiver)
 
-## .env Example:
-```.env
-PORT=3000
-MONGODB_URI=mongodb://localhost:27017/serverpusher
-SHOW_ENV=true
-SERVERS=us,uk
-AUTH_us_MODE=token
-AUTH_us_SECRET=abc123
-AUTH_uk_MODE=hmac
-AUTH_uk_SECRET=xyz456
-```
-## Example Payload:
-```json
-{
-  "server_id": "us",
-  "event": "heartbeat",
-  "timestamp": "...",
-  "players": 4
-}
+## Usage:
+- Configure with a backend URL and headers (e.g., Authorization)
+- Send any data as Map<String, Object>
+- Sends automatically as JSON via POST
+
+## Example:
+```java
+  Map<String, Object> data = new HashMap<>();
+  data.put("event", "heartbeat");
+  data.put("players", 10);
+  ServerPusher.sendData("heartbeat", data);
 ```
 ## License:
 MIT
