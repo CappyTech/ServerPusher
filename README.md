@@ -17,7 +17,7 @@ ServerPusher enables Spigot/Paper plugins to send dynamic JSON payloads via HTTP
 
 ## Usage
 
-1. Add the `serverpusher-1.0.0.jar` to your plugin’s `/lib` folder
+1. Add the `ServerPusher-1.0.1.jar` to your plugin’s `/lib` folder
 2. Reference it in your plugin's `pom.xml`:
 
 ```xml
