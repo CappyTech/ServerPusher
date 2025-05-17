@@ -1,0 +1,6 @@
+name: ServerPusher
+version: 1.0.1
+api-version: 1.20
+description: Generic JSON transport library for Minecraft plugins.
+author: CappyTech
+
