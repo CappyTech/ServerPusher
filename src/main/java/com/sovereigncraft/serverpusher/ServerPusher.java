@@ -28,10 +28,10 @@ public class ServerPusher {
         logger = log;
     }
 
-    public static void sendData(String event, Map<String, Object> payload) {
+    public static CompletableFuture<Void> sendData(String event, Map<String, Object> payload) {
         if (backendUrl == null) {
             logger.warning("ServerPusher not configured. Call configure() first.");
-            return;
+            return CompletableFuture.completedFuture(null);
         }
 
         payload.put("event", event);
@@ -39,10 +39,10 @@ public class ServerPusher {
 
         String json = gson.toJson(payload);
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
-            .uri(URI.create(backendUrl))
-            .timeout(Duration.ofSeconds(10))
-            .header("Content-Type", "application/json")
-            .POST(HttpRequest.BodyPublishers.ofString(json, StandardCharsets.UTF_8));
+                .uri(URI.create(backendUrl))
+                .timeout(Duration.ofSeconds(10))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json, StandardCharsets.UTF_8));
 
         if (customHeaders != null) {
             for (Map.Entry<String, String> entry : customHeaders.entrySet()) {
@@ -51,29 +51,28 @@ public class ServerPusher {
         }
 
         HttpRequest request = requestBuilder.build();
-
         long start = System.nanoTime();
 
-        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8))
-            .thenAccept(response -> {
-                long durationMs = (System.nanoTime() - start) / 1_000_000;
+        return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8))
+                .thenAccept(response -> {
+                    long durationMs = (System.nanoTime() - start) / 1_000_000;
 
-                int statusCode = response.statusCode();
-                String body = response.body();
-                HttpHeaders headers = response.headers();
+                    int statusCode = response.statusCode();
+                    String body = response.body();
+                    HttpHeaders headers = response.headers();
 
-                if (statusCode == 200) {
-                    logger.info("[ServerPusher] Success (" + durationMs + " ms): " + body);
-                } else {
-                    logger.warning("[ServerPusher] Failed (" + statusCode + ", " + durationMs + " ms): " + body);
-                }
+                    if (statusCode == 200) {
+                        logger.info("[ServerPusher] Success (" + durationMs + " ms): " + body);
+                    } else {
+                        logger.warning("[ServerPusher] Failed (" + statusCode + ", " + durationMs + " ms): " + body);
+                    }
 
-                logger.fine("[ServerPusher] Response Headers: " + headers.map());
-            })
-            .exceptionally(e -> {
-                long durationMs = (System.nanoTime() - start) / 1_000_000;
-                logger.warning("[ServerPusher] Exception after " + durationMs + " ms: " + e.getMessage());
-                return null;
-            });
+                    logger.fine("[ServerPusher] Response Headers: " + headers.map());
+                })
+                .exceptionally(e -> {
+                    long durationMs = (System.nanoTime() - start) / 1_000_000;
+                    logger.warning("[ServerPusher] Exception after " + durationMs + " ms: " + e.getMessage());
+                    return null;
+                });
     }
 }
